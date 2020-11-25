@@ -1,4 +1,3 @@
-package task1;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
