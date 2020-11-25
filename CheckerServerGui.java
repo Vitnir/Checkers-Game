@@ -1,4 +1,3 @@
-package task1;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -16,17 +15,16 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class CheckerServerGui extends Application {
-	
 
-	public static void main (String...args) {
+	public static void main(String... args) {
 		launch();
 	}
-	
+
 	@Override
 	public void start(Stage arg0) throws Exception {
 		createServerStage();
 	}
-	
+
 	void createServerStage() {
 		Label yourIp = new Label("Server IP: " + getOwnIp());
 		yourIp.setStyle("-fx-text-fill: black; -fx-font-size: 20px;");
@@ -52,7 +50,7 @@ public class CheckerServerGui extends Application {
 		Stage stage = new Stage();
 		stage.setScene(scene);
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			
+
 			@Override
 			public void handle(WindowEvent arg0) {
 				System.exit(0);
@@ -62,7 +60,7 @@ public class CheckerServerGui extends Application {
 		stage.getIcons().add(icon);
 		stage.show();
 	}
-	
+
 	public String getOwnIp() {
 		try {
 			URL whatismyip = new URL("http://checkip.amazonaws.com");
@@ -75,13 +73,13 @@ public class CheckerServerGui extends Application {
 		}
 		return "localhost";
 	}
-	
+
 	void boxStyle(HBox... hboxes) {
 		for (HBox hbox : hboxes) {
 			hbox.setAlignment(Pos.CENTER);
 		}
 	}
-	
+
 	void buttonStyle(Button... buts) {
 		for (Button but : buts) {
 			but.setPrefWidth(100);
@@ -94,7 +92,7 @@ public class CheckerServerGui extends Application {
 			label.setStyle("-fx-text-fill: Black; -fx-font-size: 20px;");
 		}
 	}
-	
+
 	void startServer(Label status) {
 		Thread thread;
 		thread = new Thread() {

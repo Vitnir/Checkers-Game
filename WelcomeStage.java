@@ -1,4 +1,3 @@
-package task1;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -56,11 +55,12 @@ public class WelcomeStage {
 
 	void joinGame(String server, String port) {
 		if (server.equals("")) {
-			server="localhost";
-		} if (port.equals("")) {
-			port="1099";
+			server = "localhost";
 		}
-		Board board = new Board(prime, false,server,port);
+		if (port.equals("")) {
+			port = "1099";
+		}
+		Board board = new Board(prime, false, server, port);
 		stage.close();
 		board.start();
 	}

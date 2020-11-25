@@ -1,4 +1,3 @@
-package task1;
 
 import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;
@@ -24,7 +23,6 @@ public class CheckerServer extends UnicastRemoteObject implements ICheckerServer
 	int fieldSize = 8;
 	int[][] board = new int[fieldSize][fieldSize];
 
-	
 	CheckerServer() throws RemoteException {
 		board = new int[fieldSize][fieldSize];
 	}
@@ -64,12 +62,12 @@ public class CheckerServer extends UnicastRemoteObject implements ICheckerServer
 		try {
 			ILogic c;
 			if (playOne == null) {
-				c = (ILogic) Naming.lookup("//"+url+"/logic1");
+				c = (ILogic) Naming.lookup("//" + url + "/logic1");
 				System.out.println("Spieler 1 verbunden");
 				playOne = c;
 				playOne.setPlayerNumber(1);
 			} else if (playTwo == null) {
-				c = (ILogic) Naming.lookup("//"+url+"/logic2");
+				c = (ILogic) Naming.lookup("//" + url + "/logic2");
 				System.out.println("Spieler 2 verbunden");
 				playTwo = c;
 				playTwo.setPlayerNumber(2);
@@ -104,7 +102,7 @@ public class CheckerServer extends UnicastRemoteObject implements ICheckerServer
 		this.gui = board;
 	}
 
-	public static void start () {
+	public static void start() {
 		try {
 			Registry reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
 			CheckerServer server = new CheckerServer();

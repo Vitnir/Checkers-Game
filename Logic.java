@@ -1,4 +1,3 @@
-package task1;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -45,11 +44,11 @@ public class Logic implements ILogic {
 			e.printStackTrace();
 		}
 	}
-	
-	Logic(String first, String sec, Board gui,String ip,String port) {
+
+	Logic(String first, String sec, Board gui, String ip, String port) {
 		try {
 			this.gui = gui;
-			server = (ICheckerServer) Naming.lookup("//"+ip+":"+port+"/"+"server");
+			server = (ICheckerServer) Naming.lookup("//" + ip + ":" + port + "/" + "server");
 			try {
 				// reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
 				int x = server.freeSpot();
