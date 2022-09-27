@@ -1,6 +1,7 @@
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.SocketException;
 import java.net.URL;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -16,12 +17,14 @@ import javafx.stage.WindowEvent;
 
 public class CheckerServerGui extends Application {
 
+	Button startServer;
+
 	public static void main(String... args) {
 		launch();
 	}
 
 	@Override
-	public void start(Stage arg0) throws Exception {
+	public void start(Stage prime) throws Exception {
 		createServerStage();
 	}
 
@@ -39,7 +42,7 @@ public class CheckerServerGui extends Application {
 		labelStyle(status, lPort);
 		status.setStyle("-fx-text-fill: red;");
 		HBox buttons = new HBox();
-		Button startServer = new Button("Start Server");
+		startServer = new Button("Start Server");
 		startServer.setOnAction(e -> startServer(status));
 		startServer.setStyle("-fx-text-fill: white; -fx-background-color: red;");
 		buttonStyle(startServer);
@@ -58,6 +61,7 @@ public class CheckerServerGui extends Application {
 		});
 		Image icon = new Image(getClass().getResource("/icons/crownb.png").toExternalForm());
 		stage.getIcons().add(icon);
+		stage.setY(0);
 		stage.show();
 	}
 
@@ -94,13 +98,16 @@ public class CheckerServerGui extends Application {
 	}
 
 	void startServer(Label status) {
-		Thread thread;
-		thread = new Thread() {
-
-		};
-		thread.start();
+//		Thread thread;
+//		thread = new Thread() {
+//
+//		};
+//		thread.start();
 		CheckerServer.start();
 		status.setText("online");
 		status.setStyle("-fx-text-fill: green;");
+		startServer.setDisable(true);
+		startServer.setText("running..");
+		startServer.setStyle("-fx-text-fill: white; -fx-background-color: green;");
 	}
 }

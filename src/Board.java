@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,9 +17,14 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -56,9 +62,9 @@ public class Board {
 		this.debug = debug;
 		createBoard(prime);
 	}
-	
-	public Board(Stage prime, boolean debug,String ip,String port) {
-		this.logic = new Logic("white", "black", this,ip,port);
+
+	public Board(Stage prime, boolean debug, String ip, String port) {
+		this.logic = new Logic("white", "black", this, ip, port);
 		this.prime = prime;
 		this.debug = debug;
 		createBoard(prime);
@@ -84,13 +90,15 @@ public class Board {
 		Menu test = new Menu("Test");
 		MenuItem reset = new MenuItem("Reset");
 		MenuItem kingTest = new MenuItem("King Test");
+		MenuItem win = new MenuItem("Win/Loose");
 		MenuItem clear = new MenuItem("Clear");
 		MenuItem printBoard = new MenuItem("Print Board");
 		kingTest.setOnAction(e -> kingTest());
+		win.setOnAction(e -> forceWin());
 		reset.setOnAction(e -> reset());
 		clear.setOnAction(e -> clear());
 		printBoard.setOnAction(e -> printBoard());
-		test.getItems().addAll(clear, reset, kingTest, printBoard);
+		test.getItems().addAll(clear, reset, kingTest, win, printBoard);
 
 		info.setOnAction(e -> infoStage());
 		help.getItems().addAll(info);
@@ -109,6 +117,8 @@ public class Board {
 				field.setPrefHeight((max / fieldSize));
 				field.setPrefWidth((max / fieldSize) / 2);
 				field.setStyle("-fx-background-color: grey;");
+				field.setBorder(
+						new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, null, new BorderWidths(2))));
 				field.setAlignment(Pos.CENTER);
 				left.getChildren().add(field);
 			}
@@ -120,6 +130,11 @@ public class Board {
 				field.setStyle("-fx-background-color: grey;");
 				field.setAlignment(Pos.CENTER);
 				left.getChildren().add(field);
+			}
+			for (Node x : left.getChildren()) {
+				if (x instanceof VBox) {
+					((VBox) x).prefHeightProperty().bind(prime.heightProperty().divide(fieldSize));
+				}
 			}
 		}
 
@@ -133,6 +148,11 @@ public class Board {
 		first.setPrefWidth((max / fieldSize) / 2);
 		first.setStyle("-fx-background-color: grey;");
 		first.setAlignment(Pos.CENTER);
+		first.setMinWidth((max / fieldSize) / 2);
+		first.setMaxWidth((max / fieldSize) / 2);
+		if (debug)
+			first.setBorder(
+					new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, null, new BorderWidths(2))));
 		bot.getChildren().add(first);
 		if (debug) {
 			for (int i = 0; i < 8; i++) {
@@ -140,6 +160,8 @@ public class Board {
 				field.setPrefHeight((max / fieldSize) / 2);
 				field.setPrefWidth((max / fieldSize));
 				field.setStyle("-fx-background-color: grey;");
+				field.setBorder(
+						new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, null, new BorderWidths(2))));
 				field.setAlignment(Pos.CENTER);
 				bot.getChildren().add(field);
 			}
@@ -154,8 +176,13 @@ public class Board {
 				bot.getChildren().add(field);
 			}
 		}
-
+		for (int i = 1; i < bot.getChildren().size(); i++) {
+			if (bot.getChildren().get(i) instanceof VBox) {
+				((VBox) bot.getChildren().get(i)).prefWidthProperty().bind(prime.widthProperty().divide(fieldSize));
+			}
+		}
 		return bot;
+
 	}
 
 	void createBoard(Stage prime) {
@@ -245,15 +272,15 @@ public class Board {
 		if (debug) {
 			but.setStyle("-fx-background-color: " + color + ";" + "-fx-background-radius: " + butSize + "em; "
 					+ "-fx-min-width: " + butSize + "px; " + "-fx-min-height: " + butSize + "px; " + "-fx-max-width: "
-					+ butSize + "px; " + "-fx-max-height: " + butSize
-					+ "px; -fx-background-image: url('/"+icon.getUrl()+"');-fx-background-size: " + butSize * 0.8 + " "
-					+ butSize * 0.6 + " ; -fx-background-position: center; -fx-background-repeat: no-repeat;");
+					+ butSize + "px; " + "-fx-max-height: " + butSize + "px; -fx-background-image: url('/"
+					+ icon.getUrl() + "');-fx-background-size: " + butSize * 0.8 + " " + butSize * 0.6
+					+ " ; -fx-background-position: center; -fx-background-repeat: no-repeat;");
 		} else {
 			but.setStyle("-fx-background-color: " + color + ";" + "-fx-background-radius: " + butSize + "em; "
 					+ "-fx-min-width: " + butSize + "px; " + "-fx-min-height: " + butSize + "px; " + "-fx-max-width: "
 					+ butSize + "px; " + "-fx-max-height: " + butSize + "px;"
-					+ "-fx-text-fill:  transparent ; -fx-background-image: url('"+icon.getUrl()+"');-fx-background-size: "
-					+ butSize * 0.8 + " " + butSize * 0.6
+					+ "-fx-text-fill:  transparent ; -fx-background-image: url('" + icon.getUrl()
+					+ "');-fx-background-size: " + butSize * 0.8 + " " + butSize * 0.6
 					+ " ; -fx-background-position: center; -fx-background-repeat: no-repeat;");
 		}
 		but.setOnAction(new EventHandler<ActionEvent>() {
@@ -736,7 +763,7 @@ public class Board {
 		info.setWidth(100);
 		info.setHeight(100);
 		info.initModality(Modality.APPLICATION_MODAL);
-		info.getIcons().add(new Image("./checkers.jpg"));
+		info.getIcons().add(new Image("/icons/checkers.jpg"));
 		info.show();
 		vbox.setOnMouseClicked(e -> info.close());
 	}
@@ -871,6 +898,8 @@ public class Board {
 			@Override
 			public void run() {
 				Stage erg = new Stage();
+				erg.setWidth(250);
+				erg.setHeight(50);
 				Label you;
 				if (win) {
 					you = new Label("You won!");
@@ -896,6 +925,8 @@ public class Board {
 				});
 				erg.initStyle(StageStyle.UNDECORATED);
 				erg.initModality(Modality.APPLICATION_MODAL);
+				erg.setX(prime.getX() + (((prime.getWidth() / 2)) - (erg.getWidth() / 2)));
+				erg.setY(prime.getY() + (((prime.getHeight() / 2)) - (erg.getHeight() / 2)));
 				erg.setAlwaysOnTop(true);
 				erg.show();
 			}
@@ -904,6 +935,10 @@ public class Board {
 	}
 
 	void youWon() {
+		createWinOrLoose(true);
+	}
+
+	void forceWin() {
 		createWinOrLoose(true);
 	}
 
